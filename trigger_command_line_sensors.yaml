@@ -1,34 +1,4 @@
 #trigger_command_line_sensors.yaml
 - sensor:
-    command: "grep -m1 '4{' trigger_obj.txt"
-    name: cmd_trigger4
-- sensor:
-    command: "grep -m1 '5{' trigger_obj.txt"
-    name: cmd_trigger5
-- sensor:
-    command: "grep -m1 '6{' trigger_obj.txt"
-    name: cmd_trigger6
-- sensor:
-    command: "grep -m1 '8{' trigger_obj.txt"
-    name: cmd_trigger8
-- sensor:
-    command: "grep -m1 '9{' trigger_obj.txt"
-    name: cmd_trigger9
-- sensor:
-    command: "grep -m1 '11{' trigger_obj.txt"
-    name: cmd_trigger11
-- sensor:
-    command: "grep -m1 '12{' trigger_obj.txt"
-    name: cmd_trigger12
-- sensor:
-    command: "grep -m1 '13{' trigger_obj.txt"
-    name: cmd_trigger13
-- sensor:
-    command: "grep -m1 '14{' trigger_obj.txt"
-    name: cmd_trigger14
-- sensor:
-    command: "grep -m1 '16{' trigger_obj.txt"
-    name: cmd_trigger16
-- sensor:
-    command: "grep -m1 '17{' trigger_obj.txt"
-    name: cmd_trigger17
+    command: "grep -m1 '19{' trigger_obj.txt"
+    name: cmd_trigger19

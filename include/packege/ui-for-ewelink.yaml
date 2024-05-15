@@ -467,6 +467,11 @@ ui_for_ewelink:
             entity_id: counter.index_trigger
           data:
             value: "{{index_trigger}}"
+        - alias: "reload cmd"
+          service: command_line.reload
+          data: {}
+        - delay:
+            seconds: 1
         - alias: "dell obj"
           service: shell_command.dell_obj
           data: {}

@@ -44,6 +44,13 @@
                         [
                           {"type" : "custom:button-card",
                           "template" : "card_script",
+                          "tap_action" : {
+                            "action" : "call-service",
+                            "service" : "script.dell_trigger",
+                            "data" : {
+                              "index_trigger" : i|string
+                            }
+                          },
                           "styles": {
                               "card" : 
                                 [{"width" : "min-content"}],
@@ -60,7 +67,7 @@
                           "secondary" : '{% from "primary_info_generate.jinja" import satate_template%}{% from "ewelink_ui_templates.jinja" import get_json_by_index , generate_weekdays_list%}{% set data = get_json_by_index(' + i|string + ')%}{{satate_template(data, generate_weekdays_list(data))}}',
                           "icon_color" : '{% from "primary_info_generate.jinja" import icon_color_template%}{% from "ewelink_ui_templates.jinja" import get_json_by_index%}{{icon_color_template(get_json_by_index(' + i|string + '))}}',
                           "tap_action": {
-                            "action" : "none"
+                            "action" : "more-info"
                           } }
                         ]
                     }]
