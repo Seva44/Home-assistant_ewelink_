@@ -399,6 +399,10 @@ ui_for_ewelink:
             {{-i.entity_id[i.entity_id.find("cmd_trigger")+11:]}}
             {%-endif%}
             {%-endfor%}
+        is_triggers_empty:
+          friendly_name: is_triggers_empty
+          value_template: >
+            {{states("sensor.array_of_triggers") == ""}}
   script:
     add_trigger:
       alias: add_trigger

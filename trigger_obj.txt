@@ -1,2 +1,2 @@
 #trigger_obj
-19{"platform":"sun","sun_mod":"sunset","offset_confired":"True","offset_mod":"-","offset_entity":"input_boolean.15m_delay","offset":"15m","offset_string":"\"-00:15:00\""}19
+22{"platform":"sun","sun_mod":"sunset","offset_confired":"False"}22

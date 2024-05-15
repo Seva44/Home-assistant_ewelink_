@@ -1,4 +1,4 @@
 #trigger_command_line_sensors.yaml
 - sensor:
-    command: "grep -m1 '19{' trigger_obj.txt"
-    name: cmd_trigger19
+    command: "grep -m1 '22{' trigger_obj.txt"
+    name: cmd_trigger22

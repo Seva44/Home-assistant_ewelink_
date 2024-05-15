@@ -38,6 +38,7 @@
                   {% set data = namespace(data = [])%}
                   {% set array_of_triggers = states('sensor.array_of_triggers').split(",")%}
                   {%for i in array_of_triggers%}
+                  {% if not states('sensor.is_triggers_empty')|bool%}
                   {% set data.data = data.data + 
                     [{ "type" : "horizontal-stack",
                       "cards": 
@@ -72,6 +73,7 @@
                         ]
                     }]
                   %}
+                  {%endif%}
                   {%endfor%}
                   {{data.data}}
             - type: custom:gap-card
