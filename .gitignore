@@ -1,0 +1,8 @@
+.vscode
+blueprints
+pyscript
+pyscript_modules
+tts
+home-assistant.log
+home-assistant.log.1
+home-assistant.log.fault
