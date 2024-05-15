@@ -1,0 +1,8 @@
+{%-macro filter(str) %}
+{%-set blacklist = [",", " ", ":", ";", "]", "[", "{", "}", "-", "+", "=", '.']%}
+{%-set blacklist2 = '' %}
+{%-set blacklist2 = blacklist2.join(blacklist) %}
+{%-set whitelist = "____________"%}
+{%-set x = str.maketrans(blacklist2, whitelist) %}
+{{-str.translate(x)}}
+{%-endmacro%}

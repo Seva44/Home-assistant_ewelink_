@@ -1,0 +1,116 @@
+{%-macro is_all_good(type_trigger)%}
+  {%-if type_trigger == "time"%}
+    {%-if is_state('input_boolean.week_repeat', "on")%}
+      {%-set if1 = state_attr("group.week_days", "entity_id")| select("is_state", "on") | list != []%}
+    {%-elif is_state('input_boolean.one_repeat', "on")%}
+      {%-set if1 = True%}
+    {%endif%}
+  {%-elif type_trigger == "sun"%}
+    {%-if not is_state('input_select.sun_delay_mod', "-")%}
+      {%-set if1 = state_attr("group.delays_select", "entity_id")| select("is_state", "on") | list != []%}
+    {%-elif is_state('input_select.sun_delay_mod', "-")%}
+      {%-set if1 = True%}
+    {%-endif%}
+  {%-elif type_trigger == "state"%}
+    {%-set if1 = True%}
+  {%-endif%}
+  {{-if1|bool}}
+{%-endmacro%}
+
+{%-macro get_json_by_index(index = 0)%}
+{%-set data = namespace(data = "")%}
+{% set index_length = index|string|count%}
+{%-for i in states.sensor if ("cmd_trigger" + index|string) in i.name %}
+{%-set data.data = states(i.entity_id)%}
+{%-break%}
+{%-endfor%}
+{{-data.data[data.data.find(index|string + "{")+index_length:data.data.find("}" + index|string)+1]}}
+{%-endmacro%}
+
+{%-macro generate_weekdays_list(data_json)%}
+  {%-set data = data_json|from_json%}
+  {%-set chache = namespace(data=[])%}
+  {%-if data.platform == "time"%}
+  {%-for i in data.days %}
+    {%-for y in state_attr('group.week_days', 'entity_id')|list if i in y%}
+      {%-set chache.data = chache.data + [state_attr(y, "friendly_name")[:3]]%}
+    {%-endfor%}
+  {%-endfor%}
+  {%-if chache.data|count == 7%}
+  {{-"Ежедневно"}}
+  {%-else%}
+  {{-chache.data|join(',')}}
+  {%-endif%}
+  {%-endif%}
+{%-endmacro %}
+
+{%-macro trigger_data_json(platform_input)%}
+  {%-set platform = platform_input%}
+  {#-для  platform = sun #}
+  {%-set sun_mod = (['input_boolean.sunrise_mod', 'input_boolean.sunset_mod'] | select("is_state", "on") | list)[0][14:-4]%}
+  {%-set offset_confired =  (not is_state('input_select.sun_delay_mod', "-") and ((state_attr('group.delays_select', "entity_id") | select("is_state", "on") | list) != [])) %}
+  {#-если offset настоен #}
+  {%-if offset_confired%} 
+  {%-set offset_mod = iif(is_state('input_select.sun_delay_mod', "Режим 'до' "), "-", "", "none") %}
+  {%-set offset = (state_attr('group.delays_select', "entity_id") | select("is_state", "on") | list)[0]%}
+  {%-set offset_entity = (state_attr('group.delays_select', "entity_id") | select("is_state", "on") | list)[0]%}
+  {%-set offset = offset[14:offset.find("_delay")]%}
+  {%-set offset_string = iif(offset[-1] == "m", '"' + offset_mod + "00:" + offset[:-1] + ":00" + '"', '"' + offset_mod + offset[:-1] + ":00" + ":00" + '"')%}
+  {%-endif%}
+  {#-для  platform = state #}
+  {%-set entity_id = states('input_text.selected_entity_id')|string%}
+  {%-set state_to = states('input_boolean.switch_to')%}
+  {%-set state_from = iif(is_state('input_boolean.switch_to', "off"), "on", "off")%}
+  {#-для  platform = time #}
+  {%-set repeat_mod = 0%}
+  {%-set time = [state_attr('input_datetime.trigger_time', 'hour'),state_attr('input_datetime.trigger_time', 'minute')]%}
+  {%-set days = []%}
+  {%-set chache = namespace(data=[])%}
+  {#-режим времени поторени или одни раз #}
+  {%-if is_state("input_boolean.one_repeat", "on")%}
+  {%-set repeat_mod = 0%}
+  {%-elif is_state("input_boolean.week_repeat", "on")%}
+  {%-set repeat_mod = 1%}
+  {%-else%}
+  {%-set repeat_mod = -1%}
+  {%-endif%}
+  {#-выбранные дни недели#}
+  {%-for i in state_attr('group.week_days', 'entity_id') if is_state(i, "on")%}
+  {%-set chache.data = chache.data + [i[i.find('day_')+4:]]%}
+  {%-endfor%}
+  {%-set days = chache.data%}
+  {#-вывод шаблона#}
+  {%-if platform == "time"%}
+  {{-
+    {"platform": platform,
+    "repeat_mod": repeat_mod|string,
+    "time" : time,
+    "days": days }|to_json
+  }}
+  {%-elif platform == "state"%}
+  {{-
+     {"platform": platform,
+     "entity_id" : entity_id,
+     "state_from" : state_from,
+     "state_to" : state_to}|to_json
+  }}
+  {%-elif platform == "sun"%}
+    {%-if offset_confired%}
+    {{-
+      {"platform": platform,
+      "sun_mod": sun_mod|string,
+      "offset_confired" : offset_confired|string,
+      "offset_mod" : offset_mod,
+      "offset_entity": offset_entity,
+      "offset": offset,
+      "offset_string" : offset_string}|to_json
+    }}
+    {%-else%}
+    {{-
+      {"platform": platform,
+        "sun_mod": sun_mod|string,
+        "offset_confired" : offset_confired|string}|to_json
+    }}
+    {%-endif%}
+  {%-endif%}
+{%-endmacro%}

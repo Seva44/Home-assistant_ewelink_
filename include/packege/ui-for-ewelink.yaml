@@ -1,0 +1,623 @@
+ui_for_ewelink:
+  automation:
+    - id: week_day_select
+      alias: week_day_select
+      mode: single
+      trigger:
+        - platform: state
+          entity_id: input_boolean.week_repeat
+          to: "on"
+      action:
+        - alias: "all_days_on"
+          service: input_boolean.turn_on
+          target:
+            entity_id:
+              - input_boolean.day_mon
+              - input_boolean.day_tue
+              - input_boolean.day_wed
+              - input_boolean.day_thu
+              - input_boolean.day_fri
+              - input_boolean.day_sut
+              - input_boolean.day_sun
+          data: {}
+    - id: repeat_mod
+      alias: repeat_mod
+      mode: single
+      trigger:
+        - platform: state
+          entity_id:
+            - input_boolean.one_repeat
+          id: one_repeat_on
+          from: "off"
+          to: "on"
+        - platform: state
+          entity_id:
+            - input_boolean.week_repeat
+          id: week_repeat_on
+          from: "off"
+          to: "on"
+        - platform: state
+          entity_id:
+            - input_boolean.one_repeat
+          id: one_repeat_off
+          from: "on"
+          to: "off"
+        - platform: state
+          entity_id:
+            - input_boolean.week_repeat
+          id: week_repeat_off
+          from: "on"
+          to: "off"
+      action:
+        - choose:
+            - conditions:
+                - condition: trigger
+                  id:
+                    - one_repeat_on
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id: input_boolean.week_repeat
+                  data: {}
+            - conditions:
+                - condition: trigger
+                  id:
+                    - one_repeat_off
+              sequence:
+                - service: input_boolean.turn_on
+                  target:
+                    entity_id: input_boolean.week_repeat
+                  data: {}
+            - conditions:
+                - condition: trigger
+                  id:
+                    - week_repeat_on
+              sequence:
+                - service: input_boolean.turn_off
+                  data: {}
+                  target:
+                    entity_id: input_boolean.one_repeat
+            - conditions:
+                - condition: trigger
+                  id:
+                    - week_repeat_off
+              sequence:
+                - service: input_boolean.turn_on
+                  data: {}
+                  target:
+                    entity_id: input_boolean.one_repeat
+    - id: sun_mod
+      alias: sun_mod
+      trigger:
+        - platform: state
+          id: "sunset-on"
+          entity_id: input_boolean.sunset_mod
+          from: "off"
+          to: "on"
+        - platform: state
+          id: "sunrise-on"
+          entity_id: input_boolean.sunrise_mod
+          from: "off"
+          to: "on"
+        - platform: state
+          id: "sunset-off"
+          entity_id: input_boolean.sunset_mod
+          from: "on"
+          to: "off"
+        - platform: state
+          id: "sunrise-off"
+          entity_id: input_boolean.sunrise_mod
+          from: "on"
+          to: "off"
+      action:
+        - choose:
+            - conditions:
+                - condition: trigger
+                  id: "sunset-on"
+              sequence:
+                - alias: "off input_boolean.sunrise_mod"
+                  service: input_boolean.turn_off
+                  target:
+                    entity_id: input_boolean.sunrise_mod
+            - conditions:
+                - condition: trigger
+                  id: "sunrise-on"
+              sequence:
+                - alias: "off input_boolean.sunset_mod"
+                  service: input_boolean.turn_off
+                  target:
+                    entity_id: input_boolean.sunset_mod
+            - conditions:
+                - condition: trigger
+                  id: "sunset-off"
+              sequence:
+                - alias: "on input_boolean.sunrise_mod"
+                  service: input_boolean.turn_on
+                  target:
+                    entity_id: input_boolean.sunrise_mod
+            - conditions:
+                - condition: trigger
+                  id: "sunrise-off"
+              sequence:
+                - alias: "on input_boolean.sunset_mod"
+                  service: input_boolean.turn_on
+                  target:
+                    entity_id: input_boolean.sunset_mod
+    - id: delay_select
+      alias: delay_select
+      trigger:
+        - platform: event
+          event_type: state_changed
+          event_data:
+            entity_id: input_boolean.1h_delay
+        - platform: event
+          event_type: state_changed
+          event_data:
+            entity_id: input_boolean.2h_delay
+        - platform: event
+          event_type: state_changed
+          event_data:
+            entity_id: input_boolean.3h_delay
+        - platform: event
+          event_type: state_changed
+          event_data:
+            entity_id: input_boolean.4h_delay
+        - platform: event
+          event_type: state_changed
+          event_data:
+            entity_id: input_boolean.15m_delay
+        - platform: event
+          event_type: state_changed
+          event_data:
+            entity_id: input_boolean.30m_delay
+      condition: []
+      action:
+        - variables:
+            old_state: "{{trigger.event.data.old_state.state}}"
+            new_state: "{{trigger.event.data.new_state.state}}"
+            entity: "{{trigger.event.data.entity_id}}"
+        - choose:
+            - conditions:
+                - condition: template
+                  value_template: '{{new_state == "on"}}'
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id: |
+                      {% set data = namespace(data = [])%}
+                      {%set list = ["input_boolean.1h_delay",
+                        "input_boolean.15m_delay",
+                        "input_boolean.3h_delay",
+                        "input_boolean.30m_delay",
+                        "input_boolean.4h_delay",
+                        "input_boolean.2h_deley"]%}
+                      {%-for i in list if i != entity%} {%set data.data = data.data + [i]%} {%-endfor%}{{data.data}}
+                  data: {}
+      mode: single
+    # - id: delay_reset
+    #   alias: delay_rest
+    #   trigger:
+    #     - platform: state
+    #       entity_id:
+    #         - input_boolean.15m_delay
+    #         - input_boolean.30m_delay
+    #         - input_boolean.1h_delay
+    #         - input_boolean.2h_deley
+    #         - input_boolean.3h_delay
+    #         - input_boolean.4h_delay
+    #       from: "on"
+    #       to: "off"
+    #   action:
+    #     - alias: "reset delay mod"
+    #       service: input_select.select_option
+    #       target:
+    #         entity_id: input_select.sun_delay_mod
+    #       data:
+    #         option: "-"
+    # - id: delay_select_auto
+    #   alias: delay_select_auto
+    #   trigger:
+    #     - platform: state
+    #       entity_id: input_select.sun_delay_mod
+    #       from: "-"
+    #   action:
+    #     - alias: "select delay"
+    #       service: input_boolean.turn_on
+    #       target:
+    #         entity_id: input_boolean.15m_delay
+  sensor:
+    - platform: template
+      sensors:
+        trigger_primary_info:
+          friendly_name_template: >
+            {% set data = states('sensor.test_cmd')|from_json%}
+            {% if data.platform == "sun" and data.offset_confired %}
+              {% if data.offset_mod == ""%}
+                {% set sun_offset_info = "После " + state_attr(data.offset_entity, "friendly_name")%}
+              {%elif data.offset_mod == "-"%}
+                {% set sun_offset_info = "До " + state_attr(data.offset_entity, "friendly_name")%}
+              {% endif%}
+            {%else%}
+              {% set sun_offset_info = iif(data.sun_mod == "sunset", "Закат", "Восход")%}
+            {%endif%}
+            {% if data.platform == "time"%}
+              {{"Время суток"}}
+            {% elif data.platform == "sun"%}
+              {{iif(data.sun_mod == "sunset", "Закат " + sun_offset_info, "Восход " + sun_offset_info)}}
+            {%endif%}
+          value_template: > #сделано в виде функции
+            {% set data = states('sensor.trigger_data_json')|from_json%}
+            {% if data.platform == "time"%}
+            {% set primary_info = states('sensor.dni_2')%}
+            {{primary_info + " " + data.time[0]|string + ":" +  data.time[1]|string}}
+            {% elif data.platform == "sun"%}
+              {{""}}
+            {% endif%}
+          icon_template: > #сделано в виде функции
+            {% set data = states('sensor.trigger_data_json')|from_json%}
+            {% if data.platform == "time"%}
+            {{"mdi:clock-outline"}}
+            {% elif data.platform == "sun"%}
+              {{"mdi:weather-sunny"}}
+            {% endif%}
+        trigger_generate:
+          friendly_name: trigger_generate
+          value_template: >
+            {% set data = states('sensor.trigger_data_json')|from_json%}
+            {% if data.platform == "time"%}
+              {{"- platform: " + data.platform + "\n  at: \"" + data.time[0]|string + ":" + data.time[1]|string + ":00\""}}
+            {%endif%}
+        trigger_data_json: #сделано в виде функции
+          friendly_name: trigger_data_json
+          value_template: >
+            {% set platform = "sun"%}
+            {% set sun_mod =  (['input_boolean.sunrise_mod', 'input_boolean.sunset_mod'] | select("is_state", "on") | list)[0][14:-4]%}
+            {% set offset_confired =  (not is_state('input_select.sun_delay_mod', "-") and ((state_attr('group.delays_select', "entity_id") | select("is_state", "on") | list) != [])) %}
+
+            {% if offset_confired%} {# если offset настоен #}
+            {% set offset_mod = iif(is_state('input_select.sun_delay_mod', "Режим 'до' "), "-", "", "none") %}
+            {% set offset = (state_attr('group.delays_select', "entity_id") | select("is_state", "on") | list)[0]%}
+            {% set offset_entity = (state_attr('group.delays_select', "entity_id") | select("is_state", "on") | list)[0]%}
+            {% set offset = offset[14:offset.find("_delay")]%}
+            {% set offset_string = iif(offset[-1] == "m", '"' + offset_mod + "00:" + offset[:-1] + ":00" + '"', '"' + offset_mod + offset[:-1] + ":00" + ":00" + '"')%}
+            {%endif%}
+
+            {% set repeat_mod = 0%}
+            {% set time = [state_attr('input_datetime.trigger_time', 'hour'),state_attr('input_datetime.trigger_time', 'minute')]%}
+            {% set days = []%}
+            {% set chache = namespace(data=[])%}
+            {# режим времени поторени или одни раз #}
+            {%if is_state("input_boolean.one_repeat", "on")%}
+            {% set repeat_mod = 0%}
+            {%elif is_state("input_boolean.week_repeat", "on")%}
+            {% set repeat_mod = 1%}
+            {%else%}
+            {% set repeat_mod = -1%}
+            {%endif%}
+            {# выбранные дни недели#}
+            {%for i in state_attr('group.week_days', 'entity_id') if is_state(i, "on")%}
+            {% set chache.data = chache.data + [i[i.find('day_')+4:]]%}
+            {%endfor%}
+            {% set days = chache.data%}
+            {# вывод шаблона#}
+            {% if platform == "time"%}
+            {{
+              {"platform": platform,
+              "repeat_mod": repeat_mod|string,
+              "time" : time,
+              "days": days }|to_json
+            }}
+            {%elif platform == "sun"%}
+              {% if offset_confired%}
+              {{
+                {"platform": platform,
+                "sun_mod": sun_mod|string,
+                "offset_confired" : offset_confired|string,
+                "offset_mod" : offset_mod,
+                "offset_entity": offset_entity,
+                "offset": offset,
+                "offset_string" : offset_string}|to_json
+              }}
+              {%else%}
+              {{
+                {"platform": platform,
+                  "sun_mod": sun_mod|string,
+                  "offset_confired" : offset_confired|string}|to_json
+              }}
+              {%endif%}
+            {%endif%}
+        dni_2: #сделано в виде функции
+          friendly_name: "Дни"
+          value_template: >
+            {%if is_state("input_boolean.week_repeat", "on")%}
+            {% set list = state_attr("group.week_days", "entity_id")%}
+            {% set names = namespace(data = [])%}
+            {% set selected = namespace(data = [])%}
+            {% for i in list%}
+            {% set names.data = names.data + [state_attr(i, "friendly_name")[:3]]%}
+            {%endfor%}
+            {%for i in range(list|count) if states(list[i]) == "on"%}
+            {%set selected.data = selected.data + [names.data[i]]%}
+            {%endfor%}
+            {%if selected.data|count == 7%}
+            {{"Ежедневно"}}
+            {%else%}
+            {{selected.data|join(",")}}
+            {%endif%}
+            {%else%}
+              {{""}}
+            {%endif%}
+        switch_to_on:
+          friendly_name: switch_to_on
+          value_template: >
+            {{iif(is_state('input_boolean.switch_to', "on"), "on", "off")}}
+          icon_template: >
+            {{iif(is_state('input_boolean.switch_to', 'on'), 'mdi:check-bold', 'mdi:close-thick')}}
+        switch_to_off:
+          friendly_name: switch_to_off
+          value_template: >
+            {{iif(is_state('input_boolean.switch_to', "off"), "on", "off")}}
+          icon_template: >
+            {{iif(is_state('input_boolean.switch_to', 'off'), 'mdi:check-bold', 'mdi:close-thick')}}
+        trigger_start_row:
+          friendly_name: trigger_start_row
+          value_template: >
+            {% set data = states('sensor.trigger_rows').split("\n")%}
+            {% set data = data[0], data[-1]%}
+            {% set output = namespace(start_row = 0, end_rom = 0)%}
+            {% for i in data%}
+              {% if loop.first%}
+                {% set output.start_row = i[:i.find("-")]%}
+              {% endif%}
+              {% if loop.last%}
+                {% set output.end_row = i[:i.find(":")]%}
+              {% endif%}
+            {%endfor%}
+            {{output.start_row}}
+        trigger_end_row:
+          friendly_name: trigger_end_row
+          value_template: >
+            {% set data = states('sensor.trigger_rows').split("\n")%}
+            {% set data = data[0], data[-1]%}
+            {% set output = namespace(start_row = 0, end_rom = 0)%}
+            {% for i in data%}
+              {% if loop.first%}
+                {% set output.start_row = i[:i.find("-")]%}
+              {% endif%}
+              {% if loop.last%}
+                {% set output.end_row = i[:i.find(":")]%}
+              {% endif%}
+            {%endfor%}
+            {{output.end_row}}
+        array_of_triggers:
+          friendly_name: array_of_triggers
+          value_template: >
+            {% for i in states.sensor if "cmd_trigger" in i.name%}
+            {%-if not loop.last%}
+            {{-i.entity_id[i.entity_id.find("cmd_trigger")+11:] + ","}}
+            {%-else%}
+            {{-i.entity_id[i.entity_id.find("cmd_trigger")+11:]}}
+            {%-endif%}
+            {%-endfor%}
+  script:
+    add_trigger:
+      alias: add_trigger
+      mode: single
+      fields:
+        type_trigger:
+          name: type_trigger
+          required: true
+      sequence:
+        - alias: "is_all_good"
+          choose:
+            - conditions:
+                - alias: "template"
+                  condition: template
+                  value_template: >
+                    {% from "ewelink_ui_templates.jinja" import is_all_good%}
+                    {{is_all_good(type_trigger)|bool == True}}
+              sequence:
+                - service: notify.add_trigger
+                  data:
+                    message: >
+                      {%from "ewelink_ui_templates.jinja" import trigger_data_json%}
+                      {{states('counter.trigger_count') + trigger_data_json(type_trigger)
+                      +states('counter.trigger_count')}}
+                - service: notify.add_command_line_trigger
+                  metadata: {}
+                  data:
+                    message: >
+                      {{"- sensor:\n    command: \"grep -m1 '"+states("counter.trigger_count") +
+                      "{' trigger_obj.txt\"\n    name: cmd_trigger" +
+                      states("counter.trigger_count") }}
+                - service: command_line.reload
+                  data: {}
+                - service: counter.increment
+                  data: {}
+                  target:
+                    entity_id: counter.trigger_count
+            - conditions:
+                - alias: "not teplate"
+                  condition: template
+                  value_template: >
+                    {% from "ewelink_ui_templates.jinja" import is_all_good%}
+                    {{is_all_good(type_trigger)|bool == False}}
+              sequence:
+                - service: browser_mod.notification
+                  data:
+                    message: "Что-то пошло нетак. Проверьте настройки"
+                    entity_id: "{{browser_id}}"
+          default:
+            - service: browser_mod.notification
+              data:
+                message: "Что-то пошло нетак. Проверьте настройки"
+                entity_id: "{{browser_id}}"
+
+    dell_trigger:
+      alias: dell_trigger
+      mode: single
+      fields:
+        index_trigger:
+          name: Номер триггера
+          required: true
+      sequence:
+        - alias: "set index trigger"
+          service: counter.set_value
+          target:
+            entity_id: counter.index_trigger
+          data:
+            value: "{{index_trigger}}"
+        - alias: "dell obj"
+          service: shell_command.dell_obj
+          data: {}
+        - alias: "all cmd line"
+          service: shell_command.dell_command_line
+          data: {}
+        - alias: "reload cmd"
+          service: command_line.reload
+          data: {}
+  command_line:
+    - sensor:
+        command: "grep -m1 -B2 -n 'cmd_trigger{{states('counter.index_trigger')}}' trigger_command_line_sensors.yaml"
+        name: trigger_rows
+    - sensor:
+        command: "grep -m1 -n '{{states('counter.index_trigger')}}{' trigger_obj.txt"
+        name: obj_row
+        value_template: "{{value[:value.find(':')]}}"
+  input_text:
+    selected_entity_id:
+      name: selected_entity_id
+      icon: mdi:sim
+  input_datetime:
+    trigger_time:
+      name: Время
+      has_time: true
+
+  shell_command:
+    dell_command_line: "sed -i '{{states('sensor.trigger_start_row')}},{{states('sensor.trigger_end_row')}}d' trigger_command_line_sensors.yaml"
+    dell_obj: "sed -i '{{states('sensor.obj_row')}}d' trigger_obj.txt"
+  input_select:
+    rooms:
+      name: "Комнаты"
+      initial: "Гостиная"
+      icon: mdi:home
+      options:
+        - "Гостиная"
+        - "Кухня"
+        - "Спальня"
+    sun_delay_mod:
+      name: "Время:"
+      initial: "-"
+      options:
+        - "-"
+        - "Режим 'до' "
+        - "Режим 'после'"
+
+  counter:
+    trigger_count:
+      name: Кольчесто тригеров
+      initial: 0
+      minimum: 0
+      step: 1
+
+    index_trigger:
+      name: Номер триггера
+      initial: 0
+      minimum: 0
+      step: 1
+
+  input_boolean:
+    is_trigger_configured:
+      name: is_trigger_configured
+    switch_to:
+      name: switch_to
+    empty:
+      name: enmpty0
+    empty2:
+      name: enmpty1
+    empty3:
+      name: enmpty2
+    empty4:
+      name: enmpty3
+    empty5:
+      name: enmpty4
+    empty6:
+      name: enmpty5
+
+    15m_delay:
+      name: "15 минут"
+    30m_delay:
+      name: "30 минут"
+    1h_delay:
+      name: "1 час"
+    2h_deley:
+      name: "2 часа"
+    3h_delay:
+      name: "3 часа"
+    4h_delay:
+      name: "4 часа"
+
+    one_repeat:
+      name: "Один раз"
+      icon: mdi:repeat-once
+
+    week_repeat:
+      name: "Повторять"
+      icon: mdi:repeat
+
+    sunset_mod:
+      name: "Закат"
+      icon: mdi:weather-moonset-down
+
+    sunrise_mod:
+      name: "Восход"
+      icon: mdi:weather-moonset-up
+
+    day_mon:
+      name: "Понедельник"
+    day_tue:
+      name: "Вторник"
+    day_wed:
+      name: "Среда"
+    day_thu:
+      name: "Четверг"
+    day_fri:
+      name: "Пятница"
+    day_sut:
+      name: "Суббота"
+    day_sun:
+      name: "Воскресенье"
+
+  group:
+    delays_select:
+      name: "delays_select"
+      entities:
+        - input_boolean.15m_delay
+        - input_boolean.30m_delay
+        - input_boolean.1h_delay
+        - input_boolean.2h_deley
+        - input_boolean.3h_delay
+        - input_boolean.4h_delay
+    living_room:
+      name: "Гостиная"
+      entities:
+        - input_boolean.empty
+        - input_boolean.empty2
+        - input_boolean.empty4
+    kitchen_room:
+      name: "Кухня"
+      entities:
+        - input_boolean.empty3
+        - input_boolean.empty5
+        - input_boolean.empty6
+    week_days:
+      name: "Дни недели"
+      icon: mdi:calendar-week
+      entities:
+        - input_boolean.day_mon
+        - input_boolean.day_tue
+        - input_boolean.day_wed
+        - input_boolean.day_thu
+        - input_boolean.day_fri
+        - input_boolean.day_sut
+        - input_boolean.day_sun

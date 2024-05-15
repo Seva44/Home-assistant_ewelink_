@@ -1,0 +1,13 @@
+#trigger_obj
+4{"platform":"sun","sun_mod":"sunrise","offset_confired":"False"}4
+5{"platform":"sun","sun_mod":"sunrise","offset_confired":"False"}5
+6{"platform":"sun","sun_mod":"sunrise","offset_confired":"True","offset_mod":"-","offset_entity":"input_boolean.3h_delay","offset":"3h","offset_string":"\"-3:00:00\""}6
+8{"platform":"time","repeat_mod":"0","time":[2551,30],"days":["mon","tue","wed","thu","fri","sut","sun"]}8
+9{"platform":"state","entity_id":"input_boolean.empty4","state_from":"on","state_to":"off"}9
+10{"platform":"time","repeat_mod":"0","time":[5634,30],"days":["mon","tue","fri"]}10
+11{"platform":"time","repeat_mod":"1","time":[33,30],"days":["wed","sun"]}11
+12{"platform":"time","repeat_mod":"1","time":[33,30],"days":["wed","sun"]}12
+13{"platform":"time","repeat_mod":"1","time":[33,30],"days":["wed","sun"]}13
+14{"platform":"time","repeat_mod":"1","time":[7,30],"days":["mon","sun"]}14
+16{"platform":"time","repeat_mod":"0","time":[2,5],"days":["mon","tue","sut","sun"]}16
+17{"platform":"sun","sun_mod":"sunrise","offset_confired":"True","offset_mod":"","offset_entity":"input_boolean.4h_delay","offset":"4h","offset_string":"\"4:00:00\""}17

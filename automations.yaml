@@ -1,0 +1,99 @@
+- id: '1688109902537'
+  alias: cam
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.door
+  condition: []
+  action:
+  - service: input_select.select_option
+    data:
+      option: cam
+    target:
+      entity_id: input_select.selected_temlate_ui
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: input_select.selected_temlate_ui
+      state: cam
+    then:
+    - service: input_select.select_option
+      data:
+        option: temp1
+      target:
+        entity_id: input_select.selected_temlate_ui
+    else:
+    - stop: The page has already been selected
+  mode: single
+- id: '1692201619276'
+  alias: more_info
+  description: ''
+  trigger:
+  - platform: event
+    event_type: goPopup
+    event_data: {}
+  condition: []
+  action:
+  - variables:
+      devise_id: "{% set user = trigger.event.context.user_id %} {% set users = [
+        {\"user_id\" : \"ae6041990c344e08a31b9d31fd6d9fd4\", \"browser_id\" : \"fa47fde33ccadc25f6b27ef390a48678\"},
+        {\"user_id\" : \"d9b9166653e24bcca31e63fbb4111173\", \"browser_id\" : \"9e0d18a2335be1548e1c859065879e1c\"}]%}
+        {% for i in users%} {% if user == i.user_id%} {{i.browser_id}} {%endif%} {%endfor%}\n
+        \                \n"
+  - service: script.more_info
+    data:
+      devise_id: '{{devise_id}}'
+      entity: '{{trigger.event.data.entity_id}}'
+  mode: single
+- id: '1713377410342'
+  alias: test
+  description: ''
+  trigger:
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: input_boolean.1h_delay
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: input_boolean.2h_delay
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: input_boolean.3h_delay
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: input_boolean.4h_delay
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: input_boolean.15m_delay
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: input_boolean.30m_delay
+  condition: []
+  action:
+  - variables:
+      old_state: '{{trigger.event.data.old_state.state}}'
+      new_state: '{{trigger.event.data.new_state.state}}'
+      entity: '{{trigger.event.data.entity_id}}'
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{new_state == "on"}}'
+      sequence:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: "{% set data = namespace(data = [])%}\n{%set list = [\"input_boolean.1h_delay\",\n
+            \ \"input_boolean.15m_delay\",\n  \"input_boolean.3h_delay\",\n  \"input_boolean.30m_delay\",\n
+            \ \"input_boolean.4h_delay\",\n  \"input_boolean.2h_deley\"]%}\n{%-for
+            i in list if i != entity%} {%set data.data = data.data + [i]%} {%-endfor%}{{data.data}}\n"
+        data: {}
+  mode: single

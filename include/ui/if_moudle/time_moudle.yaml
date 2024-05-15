@@ -1,0 +1,60 @@
+- type: vertical-stack
+  cards: 
+    - type: horizontal-stack
+      cards:
+      - type: custom:mushroom-chips-card
+        alignment: start
+        chips: 
+          - type: template
+            icon: mdi:arrow-left
+            content: "Назад"
+            tap_action: 
+              action: fire-dom-event
+              browser_mod:
+                service: script.goto_path
+                data: 
+                  browser_id: THIS
+                  paths: "/ewelink-1/1"
+      - type: custom:mushroom-chips-card
+        alignment: center
+        chips: 
+          - type: template
+            content: "Время суток"
+      - type: custom:mushroom-chips-card
+        alignment: end
+        chips: 
+          - type: template
+            icon: mdi:content-save-settings
+            content: "Сохранить"
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: script.add_trigger
+                data: 
+                  type_trigger: "time"
+                  browser_id: THIS
+
+    - type: 'custom:time-picker-card'
+      entity: input_datetime.trigger_time
+    - type: entities
+      entities: 
+        - input_boolean.one_repeat
+        - entity: input_boolean.week_repeat
+          type: custom:multiple-entity-row
+          toggle: true
+          entities:
+            - entity: sensor.dni_2
+              name: false
+    - type: conditional
+      conditions:
+        - entity: input_boolean.week_repeat
+          state: "on"
+      card: 
+        type: custom:auto-entities
+        card:
+          type: entities
+        card_param: entities
+        filter:
+          include: 
+            - domain: input_boolean
+              entity_id: "*day_*"

@@ -1,0 +1,55 @@
+- type: vertical-stack
+  cards: 
+    - type: horizontal-stack
+      cards:
+      - type: custom:mushroom-chips-card
+        alignment: start
+        chips: 
+          - type: template
+            icon: mdi:arrow-left
+            content: "Назад"
+            tap_action: 
+              action: fire-dom-event
+              browser_mod:
+                service: script.goto_path
+                data: 
+                  browser_id: THIS
+                  paths: "/ewelink-1/1"
+      - type: custom:mushroom-chips-card
+        alignment: center
+        chips: 
+          - type: template
+            content: "Восход / Закат"
+      - type: custom:mushroom-chips-card
+        alignment: end
+        chips: 
+          - type: template
+            icon: mdi:content-save-settings
+            content: "Сохранить"
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: script.add_trigger
+                data: 
+                  type_trigger: "sun"
+                  browser_id: THIS
+    - type: entities
+      entities:
+        - entity: input_boolean.sunrise_mod
+        - entity: input_boolean.sunset_mod
+    - type: entities
+      entities:
+          - input_select.sun_delay_mod
+    - type: conditional
+      conditions:
+        - entity: input_select.sun_delay_mod
+          state_not: "-"
+      card:
+        type: custom:auto-entities
+        card:
+          type: entities
+        card_param: entities
+        filter:
+          include: 
+            - domain: input_boolean
+              entity_id: "*_delay"

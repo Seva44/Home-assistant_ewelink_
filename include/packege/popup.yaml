@@ -1,0 +1,7 @@
+popup:
+  input_text:
+    text_event:
+      name: text_event
+  input_button: 
+    event_butt:
+      name: event_butt

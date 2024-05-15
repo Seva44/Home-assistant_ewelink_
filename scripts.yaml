@@ -1,0 +1,362 @@
+confirm_trigger:
+  alias: confirm_trigger
+  fields:
+    type_trigger:
+      name: type_trigger
+      required: true
+  sequence:
+    - alias: chek_trigger_type
+      choose:
+        - conditions:
+            - condition: and
+              conditions:
+                - alias: if days != None
+                  condition: template
+                  value_template: '{{is_state("group.week_days", "on")}}'
+                - alias: if type == time
+                  condition: template
+                  value_template: '{{  type_trigger == "time" }}'
+          sequence:
+            - alias: "trigger configured"
+              service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.is_trigger_configured
+      default:
+        - alias: "error_message"
+          service: browser_mod.notification
+          data:
+            message: Произошла ошибка. Проверите настройки.
+          target:
+            entity_id: "{{browser_id}}"
+select_entity:
+  alias: select_entity
+  fields:
+    paths:
+      name: путь
+      required: true
+    selected_entity:
+      name: Сущность
+      required: true
+  sequence:
+    - service: notify.persistent_notification
+      data:
+        message: "{{selected_entity}}"
+    - service: notify.persistent_notification
+      data:
+        message: "{{paths}}"
+    - service: notify.persistent_notification
+      data:
+        message: "{{browser_id}}"
+    - service: input_text.set_value
+      data:
+        value: "{{selected_entity}}"
+      target:
+        entity_id: input_text.selected_entity_id
+    - service: browser_mod.navigate
+      data:
+        path: "{{paths}}"
+        entity_id: "{{browser_id}}"
+goto_path:
+  alias: goto_path
+  fields:
+    paths:
+      name: путь
+      required: true
+  sequence:
+    - service: browser_mod.navigate
+      data:
+        path: "{{paths}}"
+        entity_id: "{{browser_id}}"
+turn_off_lights:
+  alias: turn_off_lights
+  sequence:
+    - service: light.turn_off
+      data: {}
+      target:
+        entity_id:
+          - light.livingroom_illumination
+          - light.tv_color
+          - light.livingroom_light
+          - light.livingroom_sofa
+  mode: single
+close_cover:
+  alias: close_cover
+  sequence:
+    - service: input_number.set_value
+      data:
+        value: 0
+      target:
+        entity_id: input_number.target_position_cover
+    - if:
+        - condition: and
+          conditions:
+            - condition: template
+              value_template: "{{ states('input_select.state_cover') != 'closed' }}"
+            - condition: template
+              value_template: "{{ states('input_number.position_cover') != '0.0' }}"
+      then:
+        - service: input_select.select_option
+          data:
+            option: closing
+          target:
+            entity_id: input_select.state_cover
+        - service: input_number.decrement
+          data: {}
+          target:
+            entity_id: input_number.position_cover
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 1
+            milliseconds: 0
+          enabled: true
+        - service: script.turn_on
+          data: {}
+          target:
+            entity_id: script.close_cover2
+      else:
+        - service: input_select.select_option
+          data:
+            option: closed
+          target:
+            entity_id: input_select.state_cover
+  mode: restart
+close_cover2:
+  alias: close_cover2
+  sequence:
+    - service: input_number.set_value
+      data:
+        value: 0
+      target:
+        entity_id: input_number.target_position_cover
+    - if:
+        - condition: and
+          conditions:
+            - condition: template
+              value_template: "{{ states('input_select.state_cover') != 'closed' }}"
+            - condition: template
+              value_template: "{{ states('input_number.position_cover') != '0.0' }}"
+      then:
+        - service: input_select.select_option
+          data:
+            option: closing
+          target:
+            entity_id: input_select.state_cover
+        - service: input_number.decrement
+          data: {}
+          target:
+            entity_id: input_number.position_cover
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 1
+            milliseconds: 0
+          enabled: true
+        - service: script.turn_on
+          data: {}
+          target:
+            entity_id: script.close_cover
+      else:
+        - service: input_select.select_option
+          data:
+            option: closed
+          target:
+            entity_id: input_select.state_cover
+  mode: restart
+open_cover:
+  alias: open_cover
+  sequence:
+    - service: input_number.set_value
+      data:
+        value: 100
+      target:
+        entity_id: input_number.target_position_cover
+    - if:
+        - condition: and
+          conditions:
+            - condition: template
+              value_template: "{{ states('input_select.state_cover') != 'open' }}"
+            - condition: template
+              value_template: "{{ states('input_number.position_cover') != '100.0' }}"
+      then:
+        - service: input_select.select_option
+          data:
+            option: opening
+          target:
+            entity_id: input_select.state_cover
+        - service: input_number.increment
+          data: {}
+          target:
+            entity_id: input_number.position_cover
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 1
+            milliseconds: 0
+          enabled: true
+        - service: script.turn_on
+          data: {}
+          target:
+            entity_id: script.open_cover2
+      else:
+        - service: input_select.select_option
+          data:
+            option: open
+          target:
+            entity_id: input_select.state_cover
+  mode: restart
+open_cover2:
+  alias: open_cover2
+  sequence:
+    - service: input_number.set_value
+      data:
+        value: 100
+      target:
+        entity_id: input_number.target_position_cover
+    - if:
+        - condition: and
+          conditions:
+            - condition: template
+              value_template: "{{ states('input_select.state_cover') != 'open' }}"
+            - condition: template
+              value_template: "{{ states('input_number.position_cover') != '100.0' }}"
+      then:
+        - service: input_select.select_option
+          data:
+            option: opening
+          target:
+            entity_id: input_select.state_cover
+        - service: input_number.increment
+          data: {}
+          target:
+            entity_id: input_number.position_cover
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 1
+            milliseconds: 0
+          enabled: true
+        - service: script.turn_on
+          data: {}
+          target:
+            entity_id: script.open_cover
+      else:
+        - service: input_select.select_option
+          data:
+            option: open
+          target:
+            entity_id: input_select.state_cover
+  mode: restart
+more_info:
+  alias: more_info
+  icon: mdi:more
+  mode: parallel
+  fields:
+    devise_id:
+      name: id браузера
+      required: false
+      example: 4775fad2-b798d656
+      default: 4775fad2-b798d656
+    entity:
+      name: Обьект
+      required: false
+      example: switch.tv
+      default: switch.tv
+  variables:
+    domain: "{{entity[:entity.find('.')]}}"
+  sequence:
+    - service: browser_mod.popup
+      target:
+        device_id: "{{devise_id}}"
+      data:
+        dismissable: true
+        autoclose: false
+        size: fullscreen
+        title: " "
+        content:
+          type: custom:layout-card
+          layout_type: custom:grid-layout
+          layout:
+            height: 100%
+            grid-template-columns: 50% 50%
+            grid-template-rows: repart(4, min-content)
+            grid-template-areas: '"big big"
+
+              "act1 act2"
+
+              "static static"
+
+              "act3 act4"
+
+              '
+          cards:
+            - type: custom:button-card
+              entity: "{{entity}}"
+              tap_action:
+                action: toggle
+              styles:
+                icon:
+                  - width: 80%
+              view_layout:
+                grid-area: big
+            - type: custom:mushroom-template-card
+              icon: mdi:flash
+              primary: Включить
+              layout: vertical
+              icon_color: 42, 7, 219
+              tap_action:
+                action: call-service
+                service: "{{domain}}.turn_on"
+                data: {}
+                target:
+                  entity_id: "{{entity}}"
+              view_layout:
+                grid-area: act1
+            - type: custom:mushroom-template-card
+              icon: mdi:flash-off
+              primary: Выключить
+              layout: vertical
+              icon_color: 219, 7, 21
+              tap_action:
+                action: call-service
+                service: "{{domain}}.turn_off"
+                data: {}
+                target:
+                  entity_id: "{{entity}}"
+              view_layout:
+                grid-area: act2
+            - type: history-graph
+              show_names: false
+              entities:
+                - "{{entity}}"
+              hours_to_show: 12
+              view_layout:
+                grid-area: static
+              title: Статистика
+            - type: custom:mushroom-template-card
+              icon: mdi:alarm
+              icon_color: 7, 166, 219
+              layout: vertical
+              primary: Будильник
+              view_layout:
+                grid-area: act4
+            - type: custom:mushroom-template-card
+              icon: mdi:timer-cog-outline
+              primary: Таймер
+              icon_color: 219, 141, 7
+              layout: vertical
+              view_layout:
+                grid-area: act3
+event_go:
+  alias: event_go
+  fields:
+    entity:
+      name: Обьект
+      required: false
+      example: switch.tv
+      default: switch.tv
+  sequence:
+    - event: goPopup
+      event_data:
+        entity_id: "{{entity}}"
+  mode: single

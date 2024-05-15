@@ -1,0 +1,371 @@
+---
+button_card_templates: !include_dir_merge_named "custom_components/ui_lovelace_minimalist/__ui_minimalist__/ulm_templates/"
+
+title: NS panel №1
+views:
+  - title: Main
+    cards: 
+    
+    - type: conditional
+      conditions:
+        - entity: input_select.selected_temlate_ui
+          state: 'temp1'
+      card:
+        type: vertical-stack
+        cards:
+          - type: conditional
+            conditions:
+              - entity: input_select.template_page_templ1
+                state: ligts
+            card:    
+              type: custom:layout-card
+              layout_type: custom:grid-layout
+              layout: 
+                grid-template-columns: 55px 350px 55px
+                grid-template-rows: 465px
+                grid-template-areas: "left main right"
+                margin: 0px
+                padding: 0px
+              cards: 
+                - type: custom:button-card
+                  icon: mdi:arrow-left
+                  color: rgb(28, 128, 199)
+                  tap_action:
+                    action: call-service
+                    service: input_select.select_previous
+                    service_data:
+                      cycle: false
+                      entity_id: input_select.template_page_templ1
+                  card_mod:
+                    style: |
+                     ha-card {
+                      height: 100%
+                     }
+                  view_layout:
+                    grid-area: auto
+                    
+                - type: custom:layout-card
+                  layout_type: custom:grid-layout
+                  layout: 
+                    height: 100%
+                    grid-template-columns: 60% 40%
+                    grid-template-rows: 12% 16% 16% 28% 28%
+                    grid-template-areas: |
+                     "f5 f6"
+                     "l1 l1"
+                     "l2 l2"
+                     "l3 l3"
+                     "l4 l4"
+                    margin: 0px
+                    padding: 0px
+                  cards: 
+                    - type: 'custom:button-card'
+                      template: card_title
+                      styles:
+                        card:
+                          - margin-left: 0px
+                      view_layout:
+                        grid-area: f5
+                      name: "[[[ return states['sensor.weekday'].state ]]]"
+                      label: "[[[ return states['sensor.year'].state ]]]"
+                      
+                    - type: 'custom:button-card'
+                      template: card_title
+                      show_label: false
+                      styles:
+                        name: 
+                          - font-size: 2.2rem
+                        card:
+                          - margin-left: 15px
+                      view_layout:
+                        grid-area: f6
+                      name: "[[[ return states['sensor.time'].state ]]]"
+                      
+                      
+                    - type: "custom:button-card"
+                      template: card_light
+                      entity: light.livingroom_light
+                      view_layout:
+                        grid-area: l1
+                      variables:
+                        ulm_card_light_enable_slider: false
+                        ulm_card_light_enable_color: true
+                        ulm_card_light_force_background_color: true
+                        
+                    - type: "custom:button-card"
+                      template: card_light
+                      entity: light.livingroom_illumination
+                      view_layout:
+                        grid-area: l2
+                      variables:
+                        ulm_card_light_enable_slider: false
+                        ulm_card_light_enable_color: true
+                        ulm_card_light_force_background_color: true
+                        
+                    - type: "custom:mushroom-light-card"
+                      entity: light.tv_color
+                      show_color_control: true
+                      use_light_color: true
+                      secondary_info: none
+                      view_layout:
+                        grid-area: l3
+                        
+                    - type: "custom:button-card"
+                      template: card_light
+                      entity: light.livingroom_sofa
+                      view_layout:
+                        grid-area: l4
+                      variables:
+                        ulm_card_light_enable_slider: true
+                        ulm_card_light_enable_color: true
+                        ulm_card_light_force_background_color: true
+                        
+                        
+                        
+                - type: custom:button-card
+                  icon: mdi:arrow-right
+                  color: rgb(28, 128, 199)
+                  tap_action:
+                    action: call-service
+                    service: input_select.select_next
+                    service_data:
+                      cycle: false
+                      entity_id: input_select.template_page_templ1
+                  card_mod:
+                    style: |
+                     ha-card {
+                      height: 100%
+                     }
+                  view_layout:
+                    grid-area: auto
+            
+            
+            
+          - type: conditional
+            conditions:
+              - entity: input_select.template_page_templ1
+                state: main
+            card:    
+              type: custom:layout-card
+              layout_type: custom:grid-layout
+              layout: 
+                grid-template-columns: 401px 55px
+                grid-template-rows: 465px
+                grid-template-areas: "main right"
+                margin: 0px
+                padding: 0px
+              cards: 
+                - type: custom:layout-card
+                  layout_type: custom:grid-layout
+                  layout: 
+                    height: 100%
+                    grid-template-columns: 50% 10% 40%
+                    grid-template-rows: 12% 16% 16% 28% 28%
+                    grid-template-areas: |
+                     "f5 f5 f6"
+                     "l1 l1 l1"
+                     "cam cam cam"
+                     "cam cam cam"
+                     "cam cam cam"
+                    margin: 0px
+                    padding: 0px
+                  cards: 
+                    - type: 'custom:button-card'
+                      template: card_title
+                      styles:
+                        card:
+                          - margin-left: 0px
+                      view_layout:
+                        grid-area: f5
+                      name: "[[[ return states['sensor.weekday'].state ]]]"
+                      label: "[[[ return states['sensor.year'].state ]]]"
+                      
+                    - type: 'custom:button-card'
+                      template: card_title
+                      show_label: false
+                      styles:
+                        name: 
+                          - font-size: 2.2rem
+                        card:
+                          - margin-left: 55px
+                      view_layout:
+                        grid-area: f6
+                      name: "[[[ return states['sensor.time'].state ]]]"
+                      
+                    - type: "custom:button-card"
+                      template: card_cover
+                      view_layout:
+                        grid-area: l1
+                      entity: cover.cover
+                      variables:
+                        ulm_card_cover_enable_controls: true
+                        ulm_card_cover_enable_slider: true
+                        ulm_card_cver_favorite_percentage: 45
+                        ulm_card_cover_color: "green"
+                        
+                - type: custom:button-card
+                  icon: mdi:arrow-right
+                  color: rgb(28, 128, 199)
+                  tap_action:
+                    action: call-service
+                    service: input_select.select_next
+                    service_data:
+                      cycle: false
+                      entity_id: input_select.template_page_templ1
+                  card_mod:
+                    style: |
+                     ha-card {
+                      height: 100%
+                     }
+                  view_layout:
+                    grid-area: auto
+                    
+                
+          - type: conditional
+            conditions:
+              - entity: input_select.template_page_templ1
+                state: switches
+            card:    
+              type: custom:layout-card
+              layout_type: custom:grid-layout
+              layout: 
+                grid-template-columns: 55px 401px 
+                grid-template-rows: 465px
+                grid-template-areas: "left main"
+                margin: 0px
+                padding: 0px
+              cards: 
+                - type: custom:button-card
+                  view_layout:
+                    grid-area: auto 
+                  icon: mdi:arrow-left
+                  color: rgb(28, 128, 199)
+                  tap_action:
+                    action: call-service
+                    service: input_select.select_previous
+                    service_data:
+                      cycle: false
+                      entity_id: input_select.template_page_templ1
+                  card_mod:
+                    style: |
+                     ha-card {
+                      height: 100%
+                     }
+                - type: custom:layout-card
+                  layout_type: custom:grid-layout
+                  layout: 
+                    height: 100%
+                    grid-template-columns: 50% 10% 40%
+                    grid-template-rows: 12% 16% 16% 28% 28%
+                    grid-template-areas: |
+                     "f5 f5 f6"
+                     "l1 l2 l2"
+                     "cam cam cam"
+                     "cam cam cam"
+                     "cam cam cam"
+                    margin: 0px
+                    padding: 0px
+                  cards: 
+                    - type: 'custom:button-card'
+                      template: card_title
+                      styles:
+                        card:
+                          - margin-left: 0px
+                      view_layout:
+                        grid-area: f5
+                      name: "[[[ return states['sensor.weekday'].state ]]]"
+                      label: "[[[ return states['sensor.year'].state ]]]"
+                      
+                    - type: 'custom:button-card'
+                      template: card_title
+                      show_label: false
+                      styles:
+                        name: 
+                          - font-size: 2.2rem
+                        card:
+                          - margin-left: 55px
+                      view_layout:
+                        grid-area: f6
+                      name: "[[[ return states['sensor.time'].state ]]]"
+                      
+                    - type: 'custom:button-card'
+                      template: card_input_boolean
+                      view_layout:
+                        grid-area: l1
+                      entity: switch.tv
+                      variables:
+                        ulm_card_input_boolean_force_background_color: true
+                        
+                    - type: 'custom:button-card'
+                      template: card_input_boolean
+                      view_layout:
+                        grid-area: l2
+                      entity: switch.speaker
+                      variables:
+                        ulm_card_input_boolean_force_background_color: true
+                        ulm_card_input_boolean_color: yellow
+                        
+                    - type: picture-glance
+                      title: Living room
+                      view_layout:
+                        grid-area: cam
+                      entities: []
+                      camera_image: camera.192_168_0_101_2
+
+            
+        
+    - type: conditional
+      conditions:
+      - entity: input_select.selected_temlate_ui
+        state: 'temp2'
+      card:
+        type: entities
+        entities:
+        - input_select.selected_temlate_ui
+    
+    - type: conditional
+      conditions:
+      - entity: input_select.selected_temlate_ui
+        state: 'temp3'
+      card:
+        type: entities
+        entities:
+        - input_select.selected_temlate_ui
+        
+    - type: conditional
+      conditions:
+      - entity: input_select.selected_temlate_ui
+        state: 'cam'
+      card:
+        type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout: 
+          grid-template-columns: 450px
+          grid-template-rows: 352px 110px
+          grid-template-areas: |
+            "cam"
+            "butt"
+          margin: 0px
+          padding: 0px
+        cards:
+          - type: picture-glance
+            camera_image: camera.192_168_0_101
+            entities: []
+            view_layout:
+              grid-area: cam
+          - type: custom:button-card
+            view_layout:
+              grid-area: butt
+            icon: mdi:arrow-left
+            card_mod:
+              style: |
+               ha-card {
+                height: 100%
+               }
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                option: temp1
+                entity_id: input_select.selected_temlate_ui
+        

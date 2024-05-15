@@ -1,0 +1,19 @@
+template_objects:
+  sensor:
+  - platform: template
+    sensors:
+      time:
+        friendly_name: time
+        value_template: >
+         {% set time = now().time()|string%}
+         {{time[:5]}}
+      weekday:
+        friendly_name: weekday
+        value_template: >
+         {% set week = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскрксенье"]%}
+         {{ week[now().weekday()]  + ', ' + now().day|string}}
+      year:
+        friendly_name: year
+        value_template: >
+         {% set mounth = ["Январь","Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]%}
+         {{ now().year|string + ', ' + mounth[now().month-1]}}

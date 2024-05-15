@@ -1,0 +1,46 @@
+---
+button_card_templates: !include_dir_merge_named "custom_components/ui_lovelace_minimalist/__ui_minimalist__/ulm_templates/"
+
+title: My Awesome Home
+views:
+  - title: Example
+    cards:
+      - type: custom:mushroom-template-card
+        primary: >
+          {% if now().hour < 12 %}
+          Доброе утро!
+          {% elif now().hour >= 12 and now().hour < 17%}
+          Добрый день!
+          {% elif now().hour >= 17%}
+          Добрый вечер!
+          {% endif %}
+        icon: >
+          {% if now().hour < 12 %}
+          mdi:weather-sunset-up
+          {% elif now().hour >= 12 and now().hour < 17%}
+          mdi:weather-sunny
+          {% elif now().hour >= 17%}
+          mdi:weather-sunset-down
+          {% endif %}
+        icon_color: 252, 199, 8
+        secondary: Как дела?
+        fill_container: true
+      - type: entities
+        entities:
+          - input_number.temperatura
+          - input_number.vlazhnost
+          - entity: script.event_go
+            tap_action:
+              action: call-service
+              service: script.event_go
+              data:
+                entity: "light.livingroom_illumination"
+          - entity: switch.tv
+            tap_action:
+              action: call-service
+              service: script.more_info
+              data:
+                entity: switch.tv
+      # - type: custom:auto-entities
+      #   card: custom:button-card
+      #   card_param:

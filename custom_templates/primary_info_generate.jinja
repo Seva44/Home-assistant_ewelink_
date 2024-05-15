@@ -1,0 +1,57 @@
+{%-macro friendly_name_template(data_json)%}
+    {%-set data = data_json|from_json%}
+    {%-if data.platform == "sun"%}
+        {%-if data.offset_confired|bool%}
+        {%-if data.offset_mod == ""%}
+            {%-set sun_offset_info = "После " + state_attr(data.offset_entity, "friendly_name")%}
+        {%-elif data.offset_mod == "-"%}
+            {%-set sun_offset_info = "До " + state_attr(data.offset_entity, "friendly_name")%}
+        {%-endif%}
+        {%-else%}
+        {%-set sun_offset_info = iif(data.sun_mod == "sunset", "Закат", "Восход")%}
+        {%-endif%}
+    {%-endif%}
+    {%-if data.platform == "time"%}
+    {{-"Время суток"}}
+    {%-elif data.platform == "sun"%}
+    {{-iif(data.sun_mod == "sunset", "Закат " + sun_offset_info, "Восход " + sun_offset_info)}}
+    {%-elif data.platform == "state"%}
+    {{-state_attr(data.entity_id, "friendly_name")}}
+    {%-endif%}
+{%-endmacro%}
+
+{%-macro satate_template(data_json, week_days)%}
+    {%-set data = data_json|from_json%}
+    {%-if data.platform == "time" and data.repeat_mod == 1|string%}    
+      {%-set primary_info = week_days%}
+      {{-primary_info + " " + data.time[0]|string + ":" +  data.time[1]|string}}
+    {%-elif data.platform == "time" and data.repeat_mod == 0|string%}
+      {{-"Одни раз " + data.time[0]|string + ":" +  data.time[1]|string}}
+    {%-elif data.platform == "sun"%}
+    {{""}}
+    {%-elif data.platform == "state"%}
+    {{-state_translated(data.entity_id)}}
+    {%-endif%}
+{%-endmacro%}
+
+{%-macro icon_state_template(data_json)%}
+    {%-set data = data_json|from_json%}
+    {%-if data.platform == "time"%}
+    {{-"mdi:clock-outline"}}
+    {%-elif data.platform == "sun"%}
+    {{-"mdi:weather-sunny"}}
+    {%-elif data.platform == "state"%}
+    {{-"mdi:nintendo-switch"}}
+    {%-endif%}
+{%-endmacro%}
+
+{%-macro icon_color_template(data_json)%}
+    {%-set data = data_json|from_json%}
+    {%-if data.platform == "time"%}
+    {{-[30, 144, 255]|string}}
+    {%-elif data.platform == "sun"%}
+    {{-[253, 195, 87]|string}}
+    {%-elif data.platform == "state"%}
+    {{-[29, 206, 116]|string}}
+    {%-endif%}
+{%-endmacro%}

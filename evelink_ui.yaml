@@ -1,0 +1,119 @@
+---
+  button_card_templates: !include_dir_merge_named "custom_components/ui_lovelace_minimalist/__ui_minimalist__/ulm_templates/"
+  
+  title: constructor
+  views:
+    - title: Page1
+      cards: 
+        # - type: entities
+        #   entities:
+        #     - cover.cover
+        - type: vertical-stack
+          cards: 
+            - type: 'custom:button-card'
+              template: card_title
+              name: "Если"
+              label: "это условие срабатывания"
+              styles:
+                card:
+                  - margin-left: 0px
+            - type: 'custom:button-card'
+              template: card_script
+              variables:
+                ulm_card_script_title: "Добивить"
+                ulm_card_script_icon: mdi:plus-circle-outline
+              tap_action: 
+                action: fire-dom-event
+                browser_mod:
+                  service: script.goto_path
+                  data: 
+                    browser_id: THIS
+                    paths: "/ewelink-1/1"
+            - type: custom:auto-entities
+              card: 
+                type: vertical-stack
+              card_param: cards
+              filter: 
+                template: |
+                  {% set data = namespace(data = [])%}
+                  {% set array_of_triggers = states('sensor.array_of_triggers').split(",")%}
+                  {%for i in array_of_triggers%}
+                  {% set data.data = data.data + 
+                    [{ "type" : "horizontal-stack",
+                      "cards": 
+                        [
+                          {"type" : "custom:button-card",
+                          "template" : "card_script",
+                          "styles": {
+                              "card" : 
+                                [{"width" : "min-content"}],
+                              "grid" :
+                                [{"grid-template-columns": "min-content"}]
+                              },
+                          "variables": {
+                            "ulm_card_script_title" : "",
+                            "ulm_card_script_icon" : "mdi:close-thick"
+                          } },
+                          {"type" : "custom:mushroom-template-card",
+                          "icon" : '{% from "primary_info_generate.jinja" import icon_state_template%}{% from "ewelink_ui_templates.jinja" import get_json_by_index%}{% set data = get_json_by_index(' + i|string + ')%}{{icon_state_template(data)}}',
+                          "primary" : '{% from "primary_info_generate.jinja" import friendly_name_template%}{% from "ewelink_ui_templates.jinja" import get_json_by_index%}{% set data = get_json_by_index(' + i|string + ')%}{{friendly_name_template(data)}}',
+                          "secondary" : '{% from "primary_info_generate.jinja" import satate_template%}{% from "ewelink_ui_templates.jinja" import get_json_by_index , generate_weekdays_list%}{% set data = get_json_by_index(' + i|string + ')%}{{satate_template(data, generate_weekdays_list(data))}}',
+                          "icon_color" : '{% from "primary_info_generate.jinja" import icon_color_template%}{% from "ewelink_ui_templates.jinja" import get_json_by_index%}{{icon_color_template(get_json_by_index(' + i|string + '))}}',
+                          "tap_action": {
+                            "action" : "none"
+                          } }
+                        ]
+                    }]
+                  %}
+                  {%endfor%}
+                  {{data.data}}
+            - type: custom:mushroom-template-card
+              icon_color: >
+                {% from "primary_info_generate.jinja" import icon_color_template%}
+                {% from "ewelink_ui_templates.jinja" import get_json_by_index%}
+                {{icon_color_template(get_json_by_index(2))}}
+              icon: >
+                {% from "primary_info_generate.jinja" import icon_state_template%}
+                {% from "ewelink_ui_templates.jinja" import get_json_by_index%}
+                {% set data = get_json_by_index(2)%}
+                {{icon_state_template(data)}}
+              primary: >
+                {% from "primary_info_generate.jinja" import friendly_name_template%}
+                {% from "ewelink_ui_templates.jinja" import get_json_by_index%}
+                {% set data = get_json_by_index(2)%}
+                {{friendly_name_template(data)}}
+              secondary: >
+                {% from "primary_info_generate.jinja" import satate_template%}
+                {% from "ewelink_ui_templates.jinja" import get_json_by_index , generate_weekdays_list%}
+                {% set data = get_json_by_index(2)%}
+                {{satate_template(data, generate_weekdays_list(data))}}
+            - type: custom:gap-card
+            - type: 'custom:button-card'
+              template: card_title
+              name: "Затем"
+              label: "это действие"
+              styles:
+                card:
+                  - margin-left: 0px
+            - type: 'custom:button-card'
+              template: card_script
+              variables:
+                ulm_card_script_title: "Добивить"
+                ulm_card_script_icon: mdi:plus-circle-outline
+
+    - title: Page2
+      cards: !include include/ui/seletc_if_moudle.yaml
+
+    - title: Page3
+      cards: !include include/ui/if_moudle/time_moudle.yaml
+              
+    - title: Page4
+      cards: !include include/ui/if_moudle/sun_moudle.yaml
+
+    - title: Page5
+      cards: !include include/ui/if_moudle/entity_moudle/entity_select_moudle.yaml
+
+    - title: Page6
+      cards: !include include/ui/if_moudle/entity_moudle/entity_config_moudle.yaml
+
+        

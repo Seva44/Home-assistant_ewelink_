@@ -1,0 +1,93 @@
+homeassistant:
+  packages: !include_dir_merge_named include/packege/
+  customize: !include include/customize.yaml
+# Loads default set of integrations. Do not remove.
+default_config:
+
+yandex_smart_home:
+  notifier:
+    # xxx замените реальными значениями
+    - oauth_token: y0_AgAAAAB0njgeAAT7owAAAAD9gM9-AACFpF9D6NBHd6SBJOCMz8WHcMmoww
+      skill_id: 0192f55d-7a88-4c88-998a-9e2be8f3b440
+      user_id: ba4887beb3af4bb6b833e748f761d0cb
+
+    # Если в диалоге авторизовано несколько пользователей Home Assistant или
+    # к одному Home Assistant подключено несколько навыков - на каждое сочетание
+    # диалог/пользователь_HA нужно добавить отдельные записи:
+    # - oauth_token: XXXXXXXXXXXXXXXXXXXXXXXXXXX  # запрашивается с аккаунта владельца диалога, в котором авторизован user_id
+    #   skill_id: xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx
+    #   user_id: yyyyyyyyyyyyyyyyyyyyyyyyyyyy
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+pyscript:
+  allow_all_imports: true
+  hass_is_global: true
+
+logger:
+  default: info
+  logs:
+    custom_components.pyscript: info
+
+lovelace:
+  mode: yaml
+  resources:
+    - url: /hacsfiles/lovelace-mushroom/mushroom.js
+      type: module
+    - url: /hacsfiles/button-card/button-card.js
+      type: module
+    - url: /hacsfiles/lovelace-card-mod/card-mod.js
+      type: module
+    - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
+      type: module
+    - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
+      type: module
+    - url: /hacsfiles/my-cards/my-cards.js
+      type: module
+    - url: /hacsfiles/light-entity-card/light-entity-card.js
+      type: module
+    - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+      type: module
+    - url: /hacsfiles/lovelace-layout-card/layout-card.js
+      type: module
+    - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js
+      type: module
+    - url: /hacsfiles/lovelace-time-picker-card/time-picker-card.js
+      type: module
+  dashboards:
+    for-nspanel-1:
+      title: NS Panel№1
+      mode: yaml
+      icon: mdi:fullscreen
+      filename: for-nspanel-1.yaml
+
+    ewelink-1: 
+      title: eWelink-constructor
+      mode: yaml
+      icon: mdi:teamviewer
+      filename: evelink_ui.yaml
+
+# Text-to-speech
+tts:
+  - platform: google_translate
+
+notify:
+  - name: add_timer
+    platform: file
+    filename: timers.yaml
+  - name: add_script
+    platform: file
+    filename: script_timer.yaml
+  - name: add_command_line_trigger
+    platform: file
+    filename: trigger_command_line_sensors.yaml
+  - name: add_trigger
+    platform: file
+    filename: trigger_obj.txt
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+command_line: !include trigger_command_line_sensors.yaml

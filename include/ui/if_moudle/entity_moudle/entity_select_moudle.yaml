@@ -1,0 +1,57 @@
+- type: vertical-stack
+  cards: 
+    - type: horizontal-stack
+      cards:
+      - type: custom:mushroom-chips-card
+        alignment: start
+        chips: 
+          - type: template
+            icon: mdi:arrow-left
+            content: "Назад"
+            tap_action: 
+              action: fire-dom-event
+              browser_mod:
+                service: script.goto_path
+                data: 
+                  browser_id: THIS
+                  paths: "/ewelink-1/1"
+      - type: custom:mushroom-chips-card
+        alignment: center
+        chips: 
+          - type: template
+            content: "Устроиство"
+      - type: custom:gap-card
+        height: 10
+    - type: entities
+      entities:
+        - input_select.rooms
+    - type: custom:auto-entities
+      card:
+        type: entities
+      card_param: entities
+      filter:
+        template: |
+          {% set entities = namespace(data = [], output = [])%}
+          {% set input = states('input_select.rooms')%}
+          {%for i in states.group if i.name == input%}
+          {% set entities.data = state_attr(i.entity_id, "entity_id")%}
+          {%endfor%}
+          {%for i in entities.data%}
+          {% set entities.output = entities.output + [
+            {"entity" : i,
+            "type": "button",
+            "name" : state_attr(i, "sensor.switch_to_on"),
+            "action_name": "Выбрать",
+                    "tap_action" : {
+                      "action" : "fire-dom-event",
+                      "browser_mod" : {
+                        "service" : "script.select_entity",
+                        "data" : {
+                          "browser_id": "THIS",
+                          "paths" : "/ewelink-1/5",
+                          "selected_entity": i} }
+            } } ]
+          %}
+          {%endfor%}
+          {{entities.output}}
+        

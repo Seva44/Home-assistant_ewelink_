@@ -1,0 +1,245 @@
+ui_for_nspanel:
+  cover:
+    - platform: template
+      covers:
+        cover:
+          friendly_name: Шторы
+          value_template: "{{ states('input_select.state_cover') }}"
+          position_template: "{{ states('input_number.position_cover') }}"
+          device_class: curtain
+          close_cover: 
+            service: script.close_cover
+            data: {}
+            
+          open_cover: 
+            service: script.open_cover
+            data: {}
+
+          set_cover_position: 
+            service: input_number.set_value
+            data:
+              value: "{{ position }}"
+            target:
+              entity_id: input_number.target_position_cover
+
+  switch:
+    - platform: template
+      switches:
+        speaker:
+          friendly_name: Колонки
+          value_template: "{{ states('input_boolean.speaker') }}"
+          icon_template: > 
+           {% if is_state('input_boolean.speaker', 'on')%}
+           mdi:speaker
+           {% elif is_state('input_boolean.speaker', 'off')%}
+           mdi:speaker-off
+           {% else%}
+           mdi:speaker-off
+           {%endif%}
+          turn_on:
+            service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.speaker
+          turn_off:
+            service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id: input_boolean.speaker
+              
+        tv:
+          friendly_name: Телевизор
+          value_template: "{{ states('input_boolean.tv_switch') }}"
+          icon_template: > 
+           {% if is_state('input_boolean.tv_switch', 'on')%}
+           mdi:television
+           {% elif is_state('input_boolean.tv_switch', 'off')%}
+           mdi:television-off
+           {% else%}
+           mdi:television-off
+           {%endif%}
+          turn_on:
+            service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.tv_switch
+          turn_off:
+            service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id: input_boolean.tv_switch
+  light:
+    - platform: template
+      lights:
+        livingroom_light:
+          friendly_name: Свет
+          value_template: "{{ states('input_boolean.livingroom_light') }}"
+          icon_template: "{% if is_state('input_boolean.livingroom_light', 'on')%}mdi:lightbulb{% elif is_state('input_boolean.livingroom_light', 'off')%}mdi:lightbulb-off{% else%}mdi:lightbulb-question{%endif%}"
+          turn_on:
+            service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.livingroom_light
+          turn_off:
+            service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id: input_boolean.livingroom_light
+              
+        livingroom_illumination:
+          friendly_name: Подсветка
+          value_template: "{{ states('input_boolean.livingroom_illumination') }}"
+          icon_template: "{% if is_state('input_boolean.livingroom_illumination', 'on')%}mdi:string-lights{% elif is_state('input_boolean.livingroom_illumination', 'off')%}mdi:string-lights-off{% else%}mdi:help{%endif%}"
+          turn_on:
+            service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.livingroom_illumination
+          turn_off:
+            service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id: input_boolean.livingroom_illumination
+              
+        livingroom_sofa:
+          friendly_name: Свет над диваном
+          value_template: "{{ states('input_boolean.livingroom_sofa') }}"
+          level_template: "{{ states('input_number.livingroom_sofa')|round(0) }}"
+          icon_template: "{% if is_state('input_boolean.livingroom_sofa', 'on')%}mdi:string-lights{% elif is_state('input_boolean.livingroom_sofa', 'off')%}mdi:string-lights-off{% else%}mdi:help{%endif%}"
+          set_level:
+            service: input_number.set_value
+            data:
+              value: "{{ brightness }}"
+            target:
+              entity_id: input_number.livingroom_sofa
+          turn_on:
+            service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.livingroom_sofa
+          turn_off:
+            service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id: input_boolean.livingroom_sofa
+              
+        tv_color:
+          friendly_name: Подсветка телевизорра
+          value_template: "{{ states('input_boolean.tv') }}"
+          icon_template: "{% if is_state('input_boolean.tv', 'on')%}mdi:string-lights{% elif is_state('input_boolean.tv', 'off')%}mdi:string-lights-off{% else%}mdi:help{%endif%}"
+          color_template: "{{ states('input_number.tv_color_h') + ', '+ states('input_number.tv_color_s')}}"
+          turn_on:
+            service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.tv
+          turn_off:
+            service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id: input_boolean.tv
+          set_color:
+          - service: input_number.set_value
+            data:
+              value: "{{ h }}"
+              entity_id: input_number.tv_color_h
+          - service: input_number.set_value
+            data:
+              value: "{{ s }}"
+              entity_id: input_number.tv_color_s
+           
+  input_button:
+    door:
+      name: door
+      icon: mdi:door
+  input_number:
+    target_position_cover:
+      name: Шторы2
+      initial: 100
+      min: 0
+      max: 100
+      step: 1
+      mode: box
+    position_cover:
+      name: Шторы
+      initial: 100
+      min: 0
+      max: 100
+      step: 1
+      mode: box
+  
+    livingroom_sofa:
+      name: livingroom_sofa
+      initial: 0
+      min: 0
+      max: 255
+      step: 1
+      mode: box
+      
+    tv_color_h:
+      name: tv_color_h
+      initial: 0.001
+      min: 0
+      max: 1000
+      step: 0.001
+      mode: box
+      
+    tv_color_s:
+      name: tv_color_s
+      initial: 0.001
+      min: 0
+      max: 1000
+      step: 0.001
+      mode: box
+          
+  input_boolean:
+    livingroom_sofa:
+      name: livingroom_sofa
+      icon: mdi:lightbulb
+      
+    livingroom_light:
+      name: livingroom_light
+      icon: mdi:lightbulb
+      
+    livingroom_illumination:
+      name: livingroom_light
+      icon: mdi:string-lights
+      
+    tv:
+      name: tv
+      icon: mdi:television
+      
+    tv_switch:
+      name: tv
+      icon: mdi:television
+      
+    speaker:
+      name: speaker
+      icon: mdi:speaker
+  
+  input_select:
+    state_cover:
+      name: state_cover
+      initial: "open"
+      options:
+      - open
+      - opening
+      - closed
+      - closing 
+      
+    selected_temlate_ui:
+      name: selected_temlate_ui
+      initial: 'temp1'
+      options:
+      - temp1
+      - temp2
+      - temp3
+      - cam
+      
+    template_page_templ1:
+      name: template_page_templ1
+      initial: main
+      options:
+      - main
+      - ligts
+      - switches
