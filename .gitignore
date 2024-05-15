@@ -6,3 +6,6 @@ tts
 home-assistant.log
 home-assistant.log.1
 home-assistant.log.fault
+home-assistant_v2.db-wal
+home-assistant_v2.db-shm
+home-assistant_v2.db
