@@ -9,3 +9,7 @@ home-assistant.log.fault
 home-assistant_v2.db-wal
 home-assistant_v2.db-shm
 home-assistant_v2.db
+custom_components
+themes
+ui_lovelace_minimalist
+www
