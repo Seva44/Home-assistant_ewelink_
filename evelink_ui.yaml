@@ -67,26 +67,6 @@
                   %}
                   {%endfor%}
                   {{data.data}}
-            - type: custom:mushroom-template-card
-              icon_color: >
-                {% from "primary_info_generate.jinja" import icon_color_template%}
-                {% from "ewelink_ui_templates.jinja" import get_json_by_index%}
-                {{icon_color_template(get_json_by_index(2))}}
-              icon: >
-                {% from "primary_info_generate.jinja" import icon_state_template%}
-                {% from "ewelink_ui_templates.jinja" import get_json_by_index%}
-                {% set data = get_json_by_index(2)%}
-                {{icon_state_template(data)}}
-              primary: >
-                {% from "primary_info_generate.jinja" import friendly_name_template%}
-                {% from "ewelink_ui_templates.jinja" import get_json_by_index%}
-                {% set data = get_json_by_index(2)%}
-                {{friendly_name_template(data)}}
-              secondary: >
-                {% from "primary_info_generate.jinja" import satate_template%}
-                {% from "ewelink_ui_templates.jinja" import get_json_by_index , generate_weekdays_list%}
-                {% set data = get_json_by_index(2)%}
-                {{satate_template(data, generate_weekdays_list(data))}}
             - type: custom:gap-card
             - type: 'custom:button-card'
               template: card_title
