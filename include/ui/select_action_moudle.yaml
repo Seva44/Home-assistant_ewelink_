@@ -1,0 +1,44 @@
+- type: vertical-stack
+  cards: 
+    - type: custom:gap-card
+      height: 10 
+    - type: 'custom:button-card'
+      template: card_script
+      variables:
+        ulm_card_script_title: "Умное устроиство"
+        ulm_card_script_icon: mdi:nintendo-switch
+      styles:
+        card:
+          - border-radius: 0
+        icon:
+        - color: rgba(29, 206, 116, 1);
+        img_cell:
+          - background-color: rgba(29, 206, 116, 0.2);
+      tap_action: 
+        action: fire-dom-event
+        browser_mod:
+          service: script.goto_path
+          data: 
+            browser_id: THIS
+            paths: "/ewelink-1/2"
+    - type: custom:gap-card
+      height: 10
+    - type: 'custom:button-card'
+      template: card_script
+      variables:
+        ulm_card_script_title: "Задержка"
+        ulm_card_script_icon: mdi:alarm
+      tap_action: 
+        action: fire-dom-event
+        browser_mod:
+          service: script.goto_path
+          data: 
+            browser_id: THIS
+            paths: "/ewelink-1/3"
+      styles:
+        card:
+          - border-radius: 0
+        icon:
+          - color: rgba(30, 144, 255, 1);
+        img_cell:
+          - background-color: rgba(30, 144, 255, 0.2);

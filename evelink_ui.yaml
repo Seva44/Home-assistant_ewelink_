@@ -105,4 +105,6 @@
     - title: Page6
       cards: !include include/ui/if_moudle/entity_moudle/entity_config_moudle.yaml
 
+    - title: Page7
+      cards: !include include/ui/select_action_moudle.yaml
         
