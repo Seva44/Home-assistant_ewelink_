@@ -456,6 +456,10 @@ ui_for_ewelink:
               data:
                 message: "Что-то пошло нетак. Проверьте настройки"
                 entity_id: "{{browser_id}}"
+        - service: browser_mod.navigate
+          data:
+            path: /ewelink-1/0
+            entity_id: "{{browser_id}}"
 
     dell_trigger:
       alias: dell_trigger
