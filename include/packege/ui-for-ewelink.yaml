@@ -539,6 +539,9 @@ ui_for_ewelink:
     selected_trigger_entity_id:
       name: selected_entity_id
       icon: mdi:sim
+    selected_action_entity_id:
+      name: selected_entity_id
+      icon: mdi:sim
   input_datetime:
     trigger_time:
       name: Время

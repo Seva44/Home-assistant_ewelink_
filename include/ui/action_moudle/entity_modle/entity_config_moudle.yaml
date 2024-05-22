@@ -1,0 +1,61 @@
+- type: vertical-stack
+  cards: 
+    - type: horizontal-stack
+      cards:
+      - type: custom:mushroom-chips-card
+        alignment: start
+        chips: 
+          - type: template
+            icon: mdi:arrow-left
+            content: "Назад"
+            tap_action: 
+              action: fire-dom-event
+              browser_mod:
+                service: script.goto_path
+                data: 
+                  browser_id: THIS
+                  paths: "/ewelink-1/1"
+      - type: custom:mushroom-chips-card
+        alignment: center
+        chips: 
+          - type: template
+            content: "{{state_attr(states('input_text.selected_action_entity_id'), 'friendly_name')}}"
+      - type: custom:mushroom-chips-card
+        alignment: end
+        chips: 
+          - type: template
+            icon: mdi:content-save-settings
+            content: "Сохранить"
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: script.add_trigger
+                data: 
+                  type_trigger: "state"
+                  browser_id: THIS
+    - type: horizontal-stack
+      title: "ВКЛ / ВЫКЛ"
+      cards: 
+        - type: custom:mushroom-entity-card
+          entity: sensor.switch_to_on
+          name: "ВКЛ"
+          secondary_info: none
+          icon_color: red
+          tap_action:
+            action: call-service
+            service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.switch_to
+
+        - type: custom:mushroom-entity-card
+          entity: sensor.switch_to_off
+          name: "ВЫКЛ"
+          secondary_info: none
+          icon_color: blue
+          tap_action:
+            action: call-service
+            service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id: input_boolean.switch_to
