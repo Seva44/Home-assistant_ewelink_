@@ -19,7 +19,7 @@
         alignment: center
         chips: 
           - type: template
-            content: "{{state_attr(states('input_text.selected_entity_id'), 'friendly_name')}}"
+            content: "{{state_attr(states('input_text.selected_trigger_entity_id'), 'friendly_name')}}"
       - type: custom:mushroom-chips-card
         alignment: end
         chips: 
