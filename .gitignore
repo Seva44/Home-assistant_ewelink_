@@ -14,3 +14,5 @@ themes
 ui_lovelace_minimalist
 www
 .storage
+trigger_command_line_sensors.yaml
+trigger_obj.txt
