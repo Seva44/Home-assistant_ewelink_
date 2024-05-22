@@ -28,45 +28,6 @@ confirm_trigger:
             message: Произошла ошибка. Проверите настройки.
           target:
             entity_id: "{{browser_id}}"
-select_entity:
-  alias: select_entity
-  fields:
-    paths:
-      name: путь
-      required: true
-    selected_entity:
-      name: Сущность
-      required: true
-  sequence:
-    - service: notify.persistent_notification
-      data:
-        message: "{{selected_entity}}"
-    - service: notify.persistent_notification
-      data:
-        message: "{{paths}}"
-    - service: notify.persistent_notification
-      data:
-        message: "{{browser_id}}"
-    - service: input_text.set_value
-      data:
-        value: "{{selected_entity}}"
-      target:
-        entity_id: input_text.selected_entity_id
-    - service: browser_mod.navigate
-      data:
-        path: "{{paths}}"
-        entity_id: "{{browser_id}}"
-goto_path:
-  alias: goto_path
-  fields:
-    paths:
-      name: путь
-      required: true
-  sequence:
-    - service: browser_mod.navigate
-      data:
-        path: "{{paths}}"
-        entity_id: "{{browser_id}}"
 turn_off_lights:
   alias: turn_off_lights
   sequence:

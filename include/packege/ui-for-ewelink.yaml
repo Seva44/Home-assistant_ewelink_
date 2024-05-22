@@ -460,7 +460,6 @@ ui_for_ewelink:
           data:
             path: /ewelink-1/0
             entity_id: "{{browser_id}}"
-
     dell_trigger:
       alias: dell_trigger
       mode: single
@@ -489,6 +488,45 @@ ui_for_ewelink:
         - alias: "reload cmd"
           service: command_line.reload
           data: {}
+    select_entity_trigger:
+      alias: select_entity_trigger
+      fields:
+        paths:
+          name: путь
+          required: true
+        selected_entity:
+          name: Сущность
+          required: true
+      sequence:
+        - service: notify.persistent_notification
+          data:
+            message: "{{selected_entity}}"
+        - service: notify.persistent_notification
+          data:
+            message: "{{paths}}"
+        - service: notify.persistent_notification
+          data:
+            message: "{{browser_id}}"
+        - service: input_text.set_value
+          data:
+            value: "{{selected_entity}}"
+          target:
+            entity_id: input_text.selected_trigger_entity_id
+        - service: browser_mod.navigate
+          data:
+            path: "{{paths}}"
+            entity_id: "{{browser_id}}"
+    goto_path:
+      alias: goto_path
+      fields:
+        paths:
+          name: путь
+          required: true
+      sequence:
+        - service: browser_mod.navigate
+          data:
+            path: "{{paths}}"
+            entity_id: "{{browser_id}}"
   command_line:
     - sensor:
         command: "grep -m1 -B2 -n 'cmd_trigger{{states('counter.index_trigger')}}' trigger_command_line_sensors.yaml"
@@ -498,7 +536,7 @@ ui_for_ewelink:
         name: obj_row
         value_template: "{{value[:value.find(':')]}}"
   input_text:
-    selected_entity_id:
+    selected_trigger_entity_id:
       name: selected_entity_id
       icon: mdi:sim
   input_datetime:

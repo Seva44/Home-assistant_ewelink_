@@ -107,4 +107,7 @@
 
     - title: Page7
       cards: !include include/ui/select_action_moudle.yaml
+
+    - title: Page8
+      cards: !include include/ui/action_moudle/entity_modle/entity_select_moudle.yaml
         

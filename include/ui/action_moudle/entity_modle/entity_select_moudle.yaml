@@ -14,7 +14,7 @@
                 service: script.goto_path
                 data: 
                   browser_id: THIS
-                  paths: "/ewelink-1/1"
+                  paths: "/ewelink-1/6"
       - type: custom:mushroom-chips-card
         alignment: center
         chips: 
@@ -45,7 +45,7 @@
                     "tap_action" : {
                       "action" : "fire-dom-event",
                       "browser_mod" : {
-                        "service" : "script.select_entity_trigger",
+                        "service" : "script.select_entity",
                         "data" : {
                           "browser_id": "THIS",
                           "paths" : "/ewelink-1/5",
