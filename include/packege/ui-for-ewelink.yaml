@@ -574,6 +574,9 @@ ui_for_ewelink:
     trigger_time:
       name: Время
       has_time: true
+    delay_time:
+      name: Задержка
+      has_time: true
 
   shell_command:
     dell_command_line: "sed -i '{{states('sensor.trigger_start_row')}},{{states('sensor.trigger_end_row')}}d' trigger_command_line_sensors.yaml"
