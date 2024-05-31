@@ -58,7 +58,7 @@
   {%-set offset_string = iif(offset[-1] == "m", '"' + offset_mod + "00:" + offset[:-1] + ":00" + '"', '"' + offset_mod + offset[:-1] + ":00" + ":00" + '"')%}
   {%-endif%}
   {#-для  platform = state #}
-  {%-set entity_id = states('input_text.selected_entity_triggger')|string%}
+  {%-set entity_id = states('input_text.selected_trigger_entity_id')|string%}
   {%-set state_to = states('input_boolean.switch_to')%}
   {%-set state_from = iif(is_state('input_boolean.switch_to', "off"), "on", "off")%}
   {#-для  platform = time #}
