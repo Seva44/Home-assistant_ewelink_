@@ -89,6 +89,13 @@
               variables:
                 ulm_card_script_title: "Добивить"
                 ulm_card_script_icon: mdi:plus-circle-outline
+              tap_action: 
+                action: fire-dom-event
+                browser_mod:
+                  service: script.goto_path
+                  data: 
+                    browser_id: THIS
+                    paths: "/ewelink-1/6"
 
     - title: Page2
       cards: !include include/ui/seletc_if_moudle.yaml

@@ -45,10 +45,10 @@
                     "tap_action" : {
                       "action" : "fire-dom-event",
                       "browser_mod" : {
-                        "service" : "script.select_entity",
+                        "service" : "script.select_entity_action",
                         "data" : {
                           "browser_id": "THIS",
-                          "paths" : "/ewelink-1/5",
+                          "paths" : "/ewelink-1/8",
                           "selected_entity": i} }
             } } ]
           %}
