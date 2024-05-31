@@ -114,3 +114,30 @@
     {%-endif%}
   {%-endif%}
 {%-endmacro%}
+
+{%-macro action_data_json(platform_input)%}
+  {%-set platform = platform_input%}
+  {# настройка delay #} 
+  {%-set delay = [
+    state_attr("input_datetime.delay_time", "hour"),
+    state_attr("input_datetime.delay_time", "minute"),
+    state_attr("input_datetime.delay_time", "second")
+  ]%}
+  {# настройка service #}
+  {# поддержка реализована пока только для input_boolean #}
+  {%-set entity_id = states('input_text.selected_action_entity_id')%}
+  {%-set set_state = states('input_boolean.switch_to')%}
+  {# генерация json #}
+  {%-if platform == "delay"%}
+  {{-
+    {"platform" : platform,
+    "delay" : delay}|to_json
+  }}
+  {%-elif platform == "service"%}
+  {{-
+    {"platform" : platform,
+    "entity_id" : entity_id,
+    "set_state" : set_state}|to_json
+  }}
+  {%-endif%}
+{%-endmacro%}
