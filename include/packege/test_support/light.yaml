@@ -1,0 +1,97 @@
+test_light:
+  input_boolean:
+    state_light:
+      name: state_light
+    availability_light:
+      name: availability_light
+  input_number:
+    level_light:
+      name: level_light
+      min: 0
+      max: 255
+      mode: box
+    temperature_light:
+      name: temperature_light
+      min: 0
+      max: 1000
+      mode: box
+    color_h_light:
+      name: color_h_light
+      initial: 0.001
+      min: 0
+      max: 1000
+      step: 0.001
+      mode: box
+    color_s_light:
+      name: color_s_light
+      initial: 0.001
+      min: 0
+      max: 1000
+      step: 0.001
+      mode: box
+  input_select:
+    list_effecst_light:
+      name: list_effecst_light
+      initial: "Static"
+      options:
+        - Static
+        - Rainbow
+        - Pulse
+  light:
+    - platform: template
+      lights:
+        test_light:
+          friendly_name: "Лампочка"
+          unique_id: test_light
+          value_template: >
+            {{is_state("input_boolean.state_light", "on")}}
+          level_template: >
+            {{states('input_number.level_light')|int|round(0)}}
+          temperature_template: >
+            {{states('input_number.temperature_light')|int|round(0)}}
+          hs_template: >
+            {{ [states('input_number.color_h_light')|float, states('input_number.color_s_light')|float]}}
+          effect_list_template: >
+            {{state_attr("input_select.list_effecst_light", "options")}}
+          effect_template: >
+            {{states("input_select.list_effecst_light")}}
+          availability_template: >
+            {{is_state('input_boolean.availability_light', 'on')}}
+          
+          turn_on:
+            service: input_boolean.turn_on
+            data: {}
+            target:
+              entity_id: input_boolean.state_light
+          turn_off:
+            service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id: input_boolean.state_light
+          set_level:
+            service: input_number.set_value
+            target:
+              entity_id: input_number.level_light
+            data:
+              value: "{{ brightness }}"
+          set_temperature:
+            service: input_number.set_value
+            target:
+              entity_id: input_number.temperature_light
+            data:
+              value: "{{ color_temp }}"
+          set_hs:
+            - service: input_number.set_value
+              data:
+                value: "{{ h }}"
+                entity_id: input_number.color_h_light
+            - service: input_number.set_value
+              data:
+                value: "{{ s }}"
+                entity_id: input_number.color_s_light
+          set_effect:
+            service: input_select.select_option
+            data:
+              option: "{{ effect }}"
+            target:
+              entity_id: input_select.list_effecst_light
