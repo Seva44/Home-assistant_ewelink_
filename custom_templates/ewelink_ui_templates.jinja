@@ -159,10 +159,16 @@
   {%-set supported_futures = supported_futures + ["color_temp"]%}
   {%-endif%}
   {%-if (data.data.hs_color|default(not_exs) != not_exs) or (data.rgb_color|default(None) != None)%}
-  {%-set supported_futures = supported_futures + ["color"]%}
+  {%-set supported_futures = supported_futures + ["color_picker"]%}
   {%-endif%}
   {%-if data.data.effect|default(not_exs) != not_exs%}
-  {%-set supported_futures = supported_futures + ["effect"]%}
+  {%-set supported_futures = supported_futures + ["effects_list"]%}
   {%-endif%}
-  {{-supported_futures}}
+  {{-
+    {"brightness" : ("brightness" in supported_futures),
+    "color_temp" : ("color_temp" in supported_futures),
+    "color_picker" : ("color_picker" in supported_futures),
+    "effects_list" : ("effects_list" in supported_futures)   
+    }|to_json
+  }}
 {%-endmacro%}
