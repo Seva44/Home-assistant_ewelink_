@@ -141,3 +141,28 @@
   }}
   {%-endif%}
 {%-endmacro%}
+
+{%-macro get_supported_futures(entity_input)%}
+  {%-set supported_futures = []%}
+  {%-set entity = entity_input%}
+  {%-set data = namespace(data = {})%}
+  {%-set not_exs = "not exs"%}
+  {#-получение списка атрибутов обьекта#}
+  {%-for i in states if i.entity_id == entity%}
+  {%-set data.data = i.attributes%}
+  {%-endfor%}
+  {#-проверка на поддержку функцый#}
+  {%-if data.data.brightness|default(not_exs) != not_exs%}
+  {%-set supported_futures = supported_futures + ["brightness"]%}
+  {%-endif%}
+  {%-if data.data.color_temp|default(not_exs) != not_exs%}
+  {%-set supported_futures = supported_futures + ["color_temp"]%}
+  {%-endif%}
+  {%-if (data.data.hs_color|default(not_exs) != not_exs) or (data.rgb_color|default(None) != None)%}
+  {%-set supported_futures = supported_futures + ["color"]%}
+  {%-endif%}
+  {%-if data.data.effect|default(not_exs) != not_exs%}
+  {%-set supported_futures = supported_futures + ["effect"]%}
+  {%-endif%}
+  {{-supported_futures}}
+{%-endmacro%}
