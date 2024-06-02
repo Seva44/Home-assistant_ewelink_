@@ -695,6 +695,10 @@ ui_for_ewelink:
         - input_boolean.empty3
         - input_boolean.empty5
         - input_boolean.empty6
+    bedroom_room:
+      name: "Спальня"
+      entities:
+        - light.test_light
     week_days:
       name: "Дни недели"
       icon: mdi:calendar-week
