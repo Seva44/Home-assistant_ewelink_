@@ -47,7 +47,6 @@
             data: {}
             target:
               entity_id: input_boolean.switch_to
-
         - type: custom:mushroom-entity-card
           entity: sensor.switch_to_off
           name: "ВЫКЛ"
@@ -59,22 +58,27 @@
             data: {}
             target:
               entity_id: input_boolean.switch_to
-    - type: custom:auto-entities
-      card: 
-        type: vertical-stack
-      card_param: cards
-      filter: 
-        template: |
-          {%from "ewelink_ui_templates.jinja" import get_supported_futures%}
-          {% set entity = "light.livingroom_sofa"%}
-          {% set data = get_supported_futures(entity)|from_json%}
-          {{
-            [{ "type" : "custom:light-entity-card",
-              "force_features" : false,
-              "entity" : entity,
-              "brightness" : data.brightness,
-              "color_temp" : data.color_temp,
-              "color_picker" : data.color_picker,
-              "effects_list" : data.effects_list
-            }]
-          }}
+    - type: conditional
+      conditions:
+        - entity: sensor.domain_action_entity
+          state: "light"
+      card:
+        type: custom:auto-entities
+        card: 
+          type: vertical-stack
+        card_param: cards
+        filter: 
+          template: |
+            {%from "ewelink_ui_templates.jinja" import get_supported_futures%}
+            {% set entity = states('input_text.selected_action_entity_id')%}
+            {% set data = get_supported_futures(entity)|from_json%}
+            {{
+              [{ "type" : "custom:light-entity-card",
+                "force_features" : false,
+                "entity" : entity,
+                "brightness" : data.brightness,
+                "color_temp" : data.color_temp,
+                "color_picker" : data.color_picker,
+                "effects_list" : data.effects_list
+              }]
+            }}

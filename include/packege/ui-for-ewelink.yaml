@@ -403,6 +403,11 @@ ui_for_ewelink:
           friendly_name: is_triggers_empty
           value_template: >
             {{states("sensor.array_of_triggers") == ""}}
+        domain_action_entity:
+          friendly_name: domain_action_entity
+          value_template: >
+            {% set data = states('input_text.selected_action_entity_id')%}
+            {{data[:data.find(".")]}}
   script:
     add_trigger:
       alias: add_trigger
